@@ -1,0 +1,32 @@
+NOTICE
+======
+
+Hearth — https://github.com/drsamonline/app-hearth
+Copyright 2026 Dr Sohil Momin. Licensed under PolyForm Noncommercial 1.0.0 (see LICENSE).
+
+Third-party components
+----------------------
+
+None. Hearth has no third-party dependency and no CDN.
+
+Vendored from this project's own kits (same licence, same author), copied verbatim on 26/11/2026:
+
+- web-kit 0.1.0 — docs/play/web-kit.js — the offline shell, storage helpers and PWA registration
+- export-kit 1.0.0 — docs/play/export-kit.js — Blob download, used for the home export
+
+Neither kit is modified. Neither makes a network request.
+
+What is not built
+-----------------
+
+mDNS discovery and real device control. Both need sockets, and this app makes no network calls at all: the
+dashboard holds the devices and evaluates rules against events you report. There is no multicast listener and
+no "discovering…" spinner pretending otherwise.
+
+The LAN guard
+-------------
+
+Every address the app accepts is a private address: 10/8, 172.16/12, 192.168/16, loopback and link-local. A
+public address or a hostname is refused when it is typed, because a home dashboard has no business reaching
+the internet — and since the app makes no calls, the guard is the whole of the promise rather than a check on
+something it does.

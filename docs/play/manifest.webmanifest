@@ -1,0 +1,11 @@
+{
+  "name": "Hearth — a dashboard for your own network",
+  "short_name": "Hearth",
+  "description": "Devices on your LAN, and rules that fire on their events. Every address is local; nothing outside your network is ever reached.",
+  "start_url": "./index.html", "scope": "./", "display": "standalone",
+  "background_color": "#f6f5f2", "theme_color": "#241d16", "lang": "en-IN",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

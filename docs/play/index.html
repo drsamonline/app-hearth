@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hearth — a dashboard for your own network</title>
+<meta name="description" content="Devices on your LAN, and rules that fire on their events. Every address is local; nothing outside your network is ever reached.">
+<meta name="theme-color" content="#241d16">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{--bg:#f6f5f2;--panel:#fff;--ink:#241d16;--muted:#6b6157;--line:#d9d6cf;--accent:#8a5a2a;--accent-ink:#fff;
+        --bad:#8f2a2a;--warn:#7a5510;--ok:#3d5a3d;--mono:ui-monospace,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  header.top{border-bottom:1px solid var(--line);background:var(--panel);padding:14px 20px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+  header.top h1{font-size:18px;margin:0}
+  header.top p{margin:0;color:var(--muted);font-size:13px}
+  header.top a{margin-left:auto;color:var(--accent);font-size:13px;text-decoration:none;border-bottom:1px solid currentColor}
+  main{max-width:860px;margin:0 auto;padding:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+  .card h2{font-size:15px;margin:0 0 6px}
+  .card p.claim{margin:0 0 8px;color:var(--muted);font-size:13px}
+  label.fld{display:block;font-size:11px;color:var(--muted);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.06em}
+  input[type=text]{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff;color:inherit;width:100%}
+  button{font:inherit;font-size:13px;padding:8px 13px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+  button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+  button.small{padding:4px 9px;font-size:12px}
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .bar .grow{flex:1}
+  .hint{color:var(--muted);font-size:12px}
+  .status{margin:10px 0;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-size:13px;display:none}
+  .status.show{display:block}
+  .status.bad{border-color:#e3b7b7;background:#fdf3f3;color:#7d1f1f}
+  .status.ok{border-color:#b7d8cd;background:#f2f9f6;color:#14503f}
+  .status.warn{border-color:#e8d5ae;background:#fdf8ee;color:#6b4700}
+  ul.list{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:7px}
+  ul.list li{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:9px 11px;background:#fbfaf8;font-size:13px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+  ul.list li.on{border-left-color:#3d5a3d;background:#f2f9f6}
+  ul.list li .meta{display:block;font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:3px}
+  .lan{margin:10px 0 0;padding:10px 12px;border:1px solid #c9ded8;border-left:4px solid #3d5a3d;border-radius:8px;background:#f1f8f6;font-size:12.5px;color:#1d4a41}
+  footer{max-width:860px;margin:0 auto;padding:18px 20px 40px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Hearth</h1>
+  <p>A dashboard for the devices on your own network, and rules that fire on their events.</p>
+  <a href="../index.html">about</a>
+</header>
+
+<main>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+
+  <p class="lan" id="lanNote"></p>
+
+  <section class="card">
+    <h2>Add a device</h2>
+    <p class="claim">mDNS discovery is not built — no multicast, no sockets. You type the address, and only a local-network address is accepted.</p>
+    <div class="bar" style="margin-top:0">
+      <div style="flex:2"><label class="fld" for="dName">Name</label><input type="text" id="dName" placeholder="e.g. Hallway light"></div>
+      <div style="flex:2"><label class="fld" for="dAddr">LAN address</label><input type="text" id="dAddr" placeholder="192.168.1.20"></div>
+      <button class="primary" type="button" id="addBtn" style="margin-top:16px">Add</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Devices</h2>
+    <ul class="list" id="deviceList"></ul>
+  </section>
+
+  <section class="card">
+    <h2>A rule</h2>
+    <div class="bar" style="margin-top:0">
+      <div style="flex:1"><label class="fld" for="rEvent">When</label><input type="text" id="rEvent" value="motion"></div>
+      <div style="width:110px"><label class="fld" for="rAfter">After</label><input type="text" id="rAfter" value="22:00"></div>
+      <div style="flex:2"><label class="fld" for="rDevice">Turn</label><input type="text" id="rDevice" placeholder="device name" list="deviceNames"></div>
+      <datalist id="deviceNames"></datalist>
+      <button type="button" id="ruleBtn" style="margin-top:16px">Add the rule</button>
+    </div>
+    <ul class="list" id="ruleList"></ul>
+    <div class="bar">
+      <div style="width:110px"><label class="fld" for="evTime">Event at</label><input type="text" id="evTime" value="22:30"></div>
+      <button class="primary" type="button" id="fireBtn" style="margin-top:16px">Report motion</button>
+      <span class="grow"></span>
+      <span class="hint" id="fireSays"></span>
+    </div>
+  </section>
+
+  <div class="bar">
+    <button type="button" class="small" id="exportBtn">Export the home</button>
+    <span class="hint" id="ioNote"></span>
+  </div>
+
+  <footer>
+    Hearth holds the devices and the rules on this device. It makes no network calls at all, and every address it accepts is a local-network address — a
+    public one is refused when you type it.
+    <br>PolyForm Noncommercial 1.0.0 · (c) 2026 Dr Sohil Momin ·
+    <a href="https://github.com/drsamonline/app-hearth/releases/tag/app-latest">Windows, Android and Linux builds</a>
+  </footer>
+</main>
+
+<script src="web-kit.js"></script>
+<script src="export-kit.js"></script>
+<script src="hearth-core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
