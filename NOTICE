@@ -19,7 +19,8 @@ Neither kit is modified. Neither makes a network request.
 What is not built
 -----------------
 
-mDNS discovery and real device control. Both need sockets, and this app makes no network calls at all: the
+mDNS discovery and real device control. A LAN transport does exist in this estate (lan-kit, zero
+dependencies, SSE and POST) but is not wired in here; this app makes no network calls at all. Both need sockets, and this app makes no network calls at all: the
 dashboard holds the devices and evaluates rules against events you report. There is no multicast listener and
 no "discovering…" spinner pretending otherwise.
 
