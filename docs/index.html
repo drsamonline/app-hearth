@@ -1,81 +1,73 @@
 <!DOCTYPE html>
 <html lang="en-IN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hearth — a dashboard for your own network</title>
-<meta name="description" content="Devices on your LAN, and rules that fire on their events. Every address is local; nothing outside your network is ever reached.">
-<meta name="theme-color" content="#241d16">
+<meta name="description" content="Devices on your LAN and rules that fire on their events. Every address is local; nothing outside your network is ever reached.">
+<meta name="theme-color" content="#0b0f10">
 <style>
-  :root{--bg:#f6f5f2;--panel:#fff;--ink:#241d16;--muted:#6b6157;--line:#d9d6cf;--accent:#8a5a2a}
+  :root{--bg:#0b0f10;--panel:#111819;--line:#22302f;--fg:#cfe3dd;--dim:#7d968f;--amber:#d7a94b;--green:#57c99a;--mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif}
-  main{max-width:760px;margin:0 auto;padding:50px 20px 64px}
-  h1{font-size:33px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
-  .lede{font-size:18px;color:var(--muted);margin:0 0 26px}
-  .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:9px}
-  .status{margin:26px 0;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;background:var(--panel);font-size:14px}
-  .status b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
-  h2{font-size:17px;margin:30px 0 8px}
-  ul{padding-left:20px}li{margin:4px 0}
-  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#eeede9;padding:1px 5px;border-radius:4px}
-  table{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
-  th,td{text-align:left;border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
-  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-  .gap{margin:22px 0 0;padding:12px 14px;border:1px solid #e3c9c9;border-left:4px solid #8f2a2a;border-radius:9px;background:#fdf3f3;color:#7d1f1f;font-size:13.5px}
-  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
-  a{color:var(--accent)}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:14px;
+       background-image:linear-gradient(rgba(34,48,47,.55) 1px,transparent 1px),linear-gradient(90deg,rgba(34,48,47,.55) 1px,transparent 1px);
+       background-size:32px 32px}
+  .wrap{max-width:900px;margin:0 auto;padding:34px 20px 60px}
+  .bar{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:var(--panel);
+       padding:10px 14px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .bar b{color:var(--green);font-weight:400}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:middle;
+       box-shadow:0 0 8px var(--green)}
+  h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.02em;margin:26px 0 4px;font-weight:600;color:#eaf5f1}
+  h1 span{color:var(--amber)}
+  .lede{color:var(--dim);margin:0 0 26px;font-size:13.5px;line-height:1.7}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:0 0 22px}
+  .tile{border:1px solid var(--line);background:var(--panel);padding:14px}
+  .tile .k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .tile .v{font-size:15px;margin-top:6px;color:#eaf5f1}
+  .tile .v.amber{color:var(--amber)}
+  .rule{border:1px solid var(--line);background:var(--panel);padding:14px;margin:0 0 12px}
+  .rule code{color:var(--green);font-size:13px}
+  .rule .when{color:var(--dim);font-size:12px;margin-top:6px}
+  .cta{display:inline-block;margin-top:18px;border:1px solid var(--green);color:var(--green);padding:11px 20px;
+       text-decoration:none;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+  .cta:hover{background:var(--green);color:#0b0f10}
+  .sponsor{margin:26px 0 0;border:1px solid var(--line);border-left:3px solid var(--amber);background:var(--panel);
+           padding:12px 14px;font-size:11.5px;color:var(--dim);line-height:1.6}
+  .sponsor a{color:var(--amber);text-decoration:none;border-bottom:1px solid currentColor}
+  .foot{margin-top:24px;font-size:11px;color:#546a65;line-height:1.8}
+  .foot a{color:var(--dim)}
 </style></head>
-<body><main>
-  <h1>Hearth</h1>
-  <p class="lede">A dashboard for the devices on your own network, and rules that fire on their events. <strong>Every address is a local-network address.</strong></p>
-  <a class="cta" href="play/index.html">Open Hearth</a>
+<body><div class="wrap">
+  <div class="bar"><span><span class="dot"></span>hearth · local only</span><span>no cloud · <b>0</b> external hosts</span></div>
 
-  <p class="gap"><strong>mDNS discovery is not built, and no device is actually switched.</strong> There is no multicast, no socket and no network call anywhere in this app — you add a device by its LAN address, and the rules are evaluated against events you report. A public address is refused when you type it, because a home dashboard has no business reaching the internet.</p>
+  <h1>Hearth<span>.</span></h1>
+  <p class="lede">A dashboard for the devices on your own network, and rules that fire on their events.<br>
+  Every address it accepts is a private one. A public address is refused at the door.</p>
 
-  <div class="status">
-    <b>Status</b>
-    Built and working: devices with their LAN addresses and a toggle from the dashboard; rules of the form <em>"when motion happens after 22:00, turn the hallway light on"</em>; an event engine that fires at 22:30 and not at 21:30; and a guard that accepts only private addresses.
-    <br><b>Release</b>: Windows EXE, Android APK and Linux binary, built from this source in CI — <a href="https://github.com/drsamonline/app-hearth/releases/tag/app-latest">app-latest</a>.
-    <br><b>Not built</b>: mDNS discovery and real device control. Both need sockets, and this app makes no network calls at all.
+  <div class="grid">
+    <div class="tile"><div class="k">device</div><div class="v">hallway light</div></div>
+    <div class="tile"><div class="k">address</div><div class="v">192.168.1.20</div></div>
+    <div class="tile"><div class="k">state</div><div class="v amber">on</div></div>
   </div>
 
-  <h2>What it does</h2>
-  <ul>
-    <li>Adds a device by its LAN address, and refuses anything that is not a private address.</li>
-    <li>Toggles a device from the dashboard.</li>
-    <li>Runs rules of the form "when <em>event</em> happens after <em>time</em>, turn <em>device</em> on/off".</li>
-    <li>Evaluates an event locally, and says when nothing fired and why.</li>
-  </ul>
+  <div class="rule">
+    <code>when motion after 22:00 → turn hallway light on</code>
+    <div class="when">fires at 22:30 · does nothing at 21:30 · inclusive at its own minute</div>
+  </div>
+  <div class="rule">
+    <code>accept 10/8 · 172.16/12 · 192.168/16 · 127/1 · 169.254/16</code>
+    <div class="when">refuse 8.8.8.8, a hostname, and even 172.32.0.1</div>
+  </div>
 
-  <h2>What it will not do</h2>
-  <ul>
-    <li><strong>Reach the internet.</strong> No <code>fetch</code>, no endpoint; CSP <code>connect-src 'none'</code>.</li>
-    <li><strong>Accept a public address.</strong> 8.8.8.8 and a hostname are both refused.</li>
-    <li><strong>Fire early.</strong> A 22:00 rule does nothing at 21:30.</li>
-    <li><strong>Pretend to discover devices.</strong> No mDNS, and the page says so.</li>
-    <li><strong>Grow a second job.</strong> No camera, no notifications, no media.</li>
-  </ul>
+  <a class="cta" href="play/index.html">open the console →</a>
 
-  <h2>The address guard</h2>
-  <table>
-    <tr><th>Accepted</th><th>Refused</th></tr>
-    <tr><td>10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.1, 169.254.0.0/16</td><td>everything else, including hostnames and 172.32.0.1</td></tr>
-  </table>
+  <div class="sponsor">
+    <strong>Sponsor this app.</strong> It is free, offline and has no account. If it earned its keep:
+    <a href="https://github.com/sponsors/drsamonline">github.com/sponsors/drsamonline</a>
+  </div>
 
-  <h2>When things go wrong</h2>
-  <table>
-    <tr><th>Case</th><th>What happens</th></tr>
-    <tr><td>Bad input</td><td>No name, no address, a duplicate address, a rule with no time or a nonsense time, a rule on a device that is not there — each refused with the field named.</td></tr>
-    <tr><td>No network</td><td>Nothing changes; there is no network code.</td></tr>
-    <tr><td>Storage full or unavailable</td><td><strong>NOT SAVED</strong>, and the home on screen is unchanged.</td></tr>
-    <tr><td>Corrupt saved state</td><td>Reported and offered for export; never replaced with an empty one — an empty home looks like every device is gone.</td></tr>
-  </table>
-
-  <h2>How to run it</h2>
-  <ul>
-    <li><strong>Here</strong>: <a href="play/index.html">play/index.html</a>, or install it from your browser's menu.</li>
-    <li><strong>Offline file</strong>: open <code>docs/play/index.html</code> straight from disk.</li>
-    <li><strong>Tests</strong>: <code>node tests/self-tests.js</code>.</li>
-  </ul>
-
-  <footer>PolyForm Noncommercial 1.0.0 · (c) 2026 Dr Sohil Momin · <a href="https://github.com/drsamonline/app-hearth">source</a></footer>
-</main></body></html>
+  <p class="foot">mDNS discovery and real device control are not built: both need sockets, and this app makes no
+  network calls at all.<br>
+  Windows · Android · Linux at <a href="https://github.com/drsamonline/app-hearth/releases/tag/app-latest">app-latest</a> ·
+  PolyForm Noncommercial 1.0.0 · (c) 2026 Dr Sohil Momin</p>
+</div></body></html>

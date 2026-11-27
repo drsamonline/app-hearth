@@ -41,6 +41,29 @@
   .lan{margin:10px 0 0;padding:10px 12px;border:1px solid #c9ded8;border-left:4px solid #3d5a3d;border-radius:8px;background:#f1f8f6;font-size:12.5px;color:#1d4a41}
   footer{max-width:860px;margin:0 auto;padding:18px 20px 40px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
   [hidden]{display:none !important}
+
+  body{background:#0b0f10;color:#cfe3dd;font-family:ui-monospace,Menlo,Consolas,monospace}
+  header.top{background:#111819;border-bottom:1px solid #22302f}
+  header.top h1{color:#eaf5f1;letter-spacing:-.01em}
+  header.top p,header.top a{color:#7d968f}
+  main{max-width:900px}
+  .card{background:#111819;border:1px solid #22302f;border-radius:2px}
+  .card h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#d7a94b}
+  .card p.claim{color:#7d968f}
+  .lan{background:#0f1a18;border-color:#22443b;border-left-color:#57c99a;color:#9fc8ba}
+  button{background:#111819;border-color:#22302f;color:#cfe3dd;border-radius:2px}
+  button.primary{background:#57c99a;border-color:#57c99a;color:#0b0f10;font-weight:600}
+  input[type=text]{background:#0d1415;border-color:#22302f;color:#cfe3dd;border-radius:2px}
+  label.fld{color:#7d968f}
+  ul.list li{background:#0d1415;border-color:#22302f;border-left-color:#22302f;color:#cfe3dd}
+  ul.list li.on{border-left-color:#57c99a;background:#0f1a18}
+  .status{background:#111819;border-color:#22302f}
+  .status.ok{border-color:#2c5a49;background:#0f1a18;color:#9fc8ba}
+  .status.bad{border-color:#5a2c2c;background:#1a0f0f;color:#e0a3a3}
+  .status.warn{border-color:#5a4a2c;background:#1a160f;color:#e0c98f}
+  .sponsor{margin:22px 0 0;border:1px solid #22302f;border-left:3px solid #d7a94b;background:#111819;
+           padding:12px 14px;font-size:11.5px;color:#7d968f;line-height:1.6}
+  .sponsor a{color:#d7a94b;text-decoration:none;border-bottom:1px solid currentColor}
 </style>
 </head>
 <body>
@@ -94,6 +117,10 @@
     <span class="hint" id="ioNote"></span>
   </div>
 
+  <div class="sponsor">
+    <strong>Sponsor this app.</strong> It is free, offline and has no account. If it earned its keep:
+    <a href="https://github.com/sponsors/drsamonline">github.com/sponsors/drsamonline</a>
+  </div>
   <footer>
     Hearth holds the devices and the rules on this device. It makes no network calls at all, and every address it accepts is a local-network address — a
     public one is refused when you type it.
